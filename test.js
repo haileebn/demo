@@ -18,6 +18,5 @@ MongoClient.connect(process.env.URL_CONNECT, (err, db) => {
           });
     }).catch(err => console.log);
   }).catch(err => console.log);
-
 });
 

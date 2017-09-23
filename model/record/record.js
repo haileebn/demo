@@ -1,12 +1,12 @@
 require('localenv');
 
-function insertRecord(db, data) {
+function insertRecord(db, record) {
   const recordCollection = db.collection(process.env.COLLECTION_RECORD);
-  data.time = new Date();
+  record.time = new Date();
   return new Promise((resolve, reject) => {
-    recordCollection.insertOne(data)
+    recordCollection.insertOne(record)
         .then((doc) => {
-          resolve({error: false, msg: "insert success", insertedId: doc.insertedId})
+          resolve({error: false, msg: "insert success", kitID: record.kitID, record : { data: record.data, time: record.time } })
         }).catch((err) => {
       reject({error: true, msg: "Can't insert!"});
     })
@@ -24,3 +24,6 @@ function getRecord(db, recordID) {
     })
   });
 }
+
+exports.getRecord = getRecord;
+exports.insertRecord = insertRecord;

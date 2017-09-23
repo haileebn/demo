@@ -13,7 +13,7 @@ function insertStation(db, data) {
 }
 
 function getStation(db, stationID) {
-  const stationCollection = db.collection(process.env.COLLECTION_RECORD);
+  const stationCollection = db.collection(process.env.COLLECTION_STATION);
   return new Promise((resolve, reject) => {
     stationCollection.findOne({_id: stationID})
         .then((data) => {
@@ -25,9 +25,9 @@ function getStation(db, stationID) {
 }
 
 function getAllStation(db) {
-  const stationCollection = db.collection(process.env.COLLECTION_RECORD);
+  const stationCollection = db.collection(process.env.COLLECTION_STATION);
   return new Promise((resolve, reject) => {
-    stationCollection.find({}).toAray()
+    stationCollection.find({}).toArray()
         .then((station) => {
           resolve({error: false, msg: "get success", station})
         }).catch((err) => {

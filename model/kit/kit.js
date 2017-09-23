@@ -14,17 +14,10 @@ function insertKit(db, data) {
   });
 }
 
-function updateKit(db, data) {
+function updateKit(db, kitID, data) {
   const kitCollection = db.collection(process.env.COLLECTION_KIT);
   return new Promise((resolve, reject) => {
-    kitCollection.updateOne({ kitID: data.kitID },
-    {
-      $set: {
-        name : data.name,
-		location: data.location,
-		lastRecord: ObjectId(data._id),
-      }
-    }).then(() => {
+    kitCollection.updateOne({ kitID }, data).then(() => {
       resolve({error: false, msg: "success!"})
 	}).catch((err) => {
       reject({error: true, msg: "Can't update!"});
@@ -48,10 +41,30 @@ function getKit(db, data) {
   const kitCollection = db.collection(process.env.COLLECTION_KIT);
   return new Promise((resolve, reject) => {
     kitCollection.findOne({kitID: data.kitID})
-  	.then((info) => {
-      resolve(info)
+  	.then((doc) => {
+      resolve({error: false, msg: "success!", doc})
     }).catch((err) => {
       reject({error: true, msg: "Can't get!"});
     });
   });
 }
+
+function getAllKit(db) {
+  const kitCollection = db.collection(process.env.COLLECTION_KIT);
+  return new Promise((resolve, reject) => {
+    kitCollection.find().toArray()
+    .then((doc) => {
+      console.log("success");
+      resolve({error: false, msg: "success!", doc})
+    }).catch((err) => {
+      console.log("err");
+      reject({error: true, msg: "Can't get!"});
+    });
+  });
+}
+
+exports.getKit = getKit;
+exports.getAllKit = getAllKit;
+exports.removeKit = removeKit;
+exports.insertKit = insertKit;
+exports.updateKit = updateKit;
