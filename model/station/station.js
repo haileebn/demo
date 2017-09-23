@@ -1,7 +1,7 @@
 require('localenv');
 
 function insertRecord(db, data) {
-  const recordCollection = db.collection(process.env.COLLECTION_RECORD);
+  const recordCollection = db.collection(process.env.COLLECTION_STATION);
   data.time = new Date();
   return new Promise((resolve, reject) => {
     recordCollection.insertOne(data)
