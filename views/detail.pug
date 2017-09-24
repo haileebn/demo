@@ -73,6 +73,11 @@ html
             #bottomNav > .active {
                 background: #888888;
             }
+
+            .col-centered {
+                float: none;
+                margin: 0 auto;
+            }
         //if ie 6
           link(rel='stylesheet', href='ie6bereastreet.css', type='text/css')
     body
@@ -87,10 +92,10 @@ html
                     div.col-xs-12.col-sm-12.col-md-6.col-lg-6.text-center
                         img#iconFeeling
                         i#advice
-                #bodyChart(style='clear:right;').col-xs-12.col-sm-12.col-md-12.row
-                    canvas#pm25.col-xs-10.col-xs-offset-2.col-sm-12.col-md-12.col-lg-12
-                    canvas#temp.col-xs-10.col-xs-offset-2.col-sm-12.col-md-6.col-lg-6
-                    canvas#hud.col-xs-10.col-xs-offset-2.col-sm-12.col-md-6.col-lg-6
+                #bodyChart.col-xs-12.col-sm-12.col-md-12.row.center
+                    canvas#pm25.col-xs-11.col-centered.col-sm-12.col-md-12.col-lg-12
+                    canvas#temp.col-xs-11.col-centered.col-sm-12.col-md-6.col-lg-6
+                    canvas#hud.col-xs-11.col-centered.col-sm-12.col-md-6.col-lg-6
         #footerwrap
             #footer
                 .col-xs-12.navbar-inverse.navbar-fixed-bottom
