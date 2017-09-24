@@ -29,8 +29,13 @@ app.get('/', (req, res) => {
 app.get('/mobile', (req, res) => {
   res.render('mobile.pug');
 });
+
 app.get('/detail', (req, res) => {
   res.render('detail.pug');
+});
+
+app.get('/add', (req, res) => {
+  res.render('add.pug');
 });
 
 app.get('/list', (req, res) => {
