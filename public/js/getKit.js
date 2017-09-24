@@ -175,14 +175,14 @@ function getKitID(kit, kitID) {
         stringInfoNode += "PM2.5: <span style=\"color: " + color +";font-size:20px;font-weight:bold;\">" + data.pm25 + "</span> μg/m&sup3<br>";
         stringInfoNode += "Temperature : " + data.temp + "\u00B0C, ";
         stringInfoNode += "Humidity :" + data.hud + "\u0025";
-      $("#advice").css("color", color).html(strAdvice);
+      $("#advice").css("color", color).html(' &nbsp;&nbsp;' + strAdvice);
       $("#iconFeeling").attr("src", '/imageFeeling/' + iconFeel + '.png');
       $("#lastUpdate").html(lastUpdate);
       $("#infoNode").html(stringInfoNode);
 
       timeInterval = setTimeout(function() {
           getKitID(kit, kitID);
-      }, 10000);
+      }, 11000);
 	  }
 	});
 }

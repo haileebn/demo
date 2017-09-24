@@ -23,6 +23,7 @@ html
                 height: 100%;
                 margin: 0;
                 padding: 0;
+                background-color: #eeeeee;
             }
             /* set a left margin to compensate for IE/Win always making room for a scrollbar */
             div#middlewrap {
@@ -72,9 +73,14 @@ html
             #bottomNav > .active {
                 background: #888888;
             }
+            .col-centered {
+                float: none;
+                margin: 0 auto;
+            }
         //if ie 6
           link(rel='stylesheet', href='ie6bereastreet.css', type='text/css')
     body
+        br
         #middlewrap.container
         #footerwrap
             #footer
@@ -141,14 +147,14 @@ html
                   }
                     var html = ''+
                     '<a href="./detail/'+item.kitID+'"><div class="panel panel-default">\n' +
-                        '    <div class="panel-heading"><span style="color: blue;font-size:24px;font-weight:bold;">'+ item.name +'</span></div>\n' +
                         '    <div class="panel-body row">\n' +
                         '        <div class="col-xs-6 col-sm-6 col-md-6 row">\n' +
-                        '            <div class="col-xs-12 col-sm-12 col-md-12">PM2.5: <span style="color: '+color+';font-size:24px;font-weight:bold;">'+data.pm25+'</span> μg/m³</div>\n' +
+                        '<div class="col-xs-12 col-sm-12 col-md-12"><span style="color: blue;font-size:24px;font-weight:bold;">'+ item.name +'</span></div>' +
+                        '<div class="col-xs-12 col-sm-12 col-md-12">PM2.5: <span style="color: '+color+';font-size:24px;font-weight:bold;">'+data.pm25+'</span> <small>μg/m³</small></div>\n' +
                         '            <div class="col-xs-12 col-sm-12 col-md-12">Temperature: '+data.temp+'°C</div>\n' +
                         '            <div class="col-xs-12 col-sm-12 col-md-12">Hudimity: '+data.hud+'%</div>\n' +
                         '        </div>\n' +
-                        '        <div class="col-xs-6 col-sm-6 col-md-6 text-center"><img src="/imageFeeling/'+iconFeel+'.png"><i id="advice" style="color: '+color+';">'+strAdvice+'</i></div>\n' +
+                        '        <div class="col-xs-6 col-sm-6 col-md-6 text-center"><img src="/imageFeeling/'+iconFeel+'.png"> <i id="advice" style="color: '+color+';"> '+strAdvice+'</i></div>\n' +
                         '        <div class="col-xs-12 col-sm-12 col-md-12 text-right"><i style="opacity: 0.35; font-size:12px;">Last Update: '+ moment(item.lastRecord.time).format('YYYY-MM-DD, HH:mm:ss') +'</i></div>\n' +
                         '    </div>\n' +
                         '</div></a>';
