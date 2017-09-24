@@ -34,7 +34,7 @@ function drawChart(type, timeLabel, name) {
                 beginAtZero: true,
                 stepSize: 20
             };
-            labelString = name + " (μg/m\u00B3)";
+            labelString = "PM2.5 (μg/m\u00B3)";
             type.forEach((key, index) => {
             if (key <= 50) arraycolor.push('#00A065'); // lv1
             else if (key <= 100) arraycolor.push('#FFE200'); // lv2
@@ -86,7 +86,7 @@ function drawChart(type, timeLabel, name) {
         if (tooltip.dataPoints.length > 0) {
             tooltip.dataPoints.forEach(function(dataPoint) {
                 let formatTime = dataPoint.xLabel;
-                var content =   formatTime + "<br>"+
+                var content =   formatTime + "h <br>"+
                                 labelString + ": " + Number(dataPoint.yLabel).toFixed(2);
                 var $tooltip = $("#tooltip-" + dataPoint.datasetIndex);
 

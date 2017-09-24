@@ -13,3 +13,129 @@
     margin-right: -50%;
     transform: translate(-50%, -50%);
 }
+
+#aqi_indexs{
+    background-color: #fff;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    height: 42px;
+    width: 450px;
+    box-shadow: 0px 0px 3px 0px rgba(117,117,117,1);
+    -webkit-box-shadow: 0px 0px 3px 0px rgba(117,117,117,1);
+    -moz-box-shadow: 0px 0px 3px 0px rgba(117,117,117,1);
+    padding: 4px;
+    padding-top: 0;
+
+}
+#aqi_indexs td{
+    width: 20%;
+    height: 8px;
+}
+#warningLevel{
+    background-color: #fff;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    height: 42px;
+    width: 350px;
+    box-shadow: 0px 0px 3px 0px rgba(117,117,117,1);
+    -webkit-box-shadow: 0px 0px 3px 0px rgba(117,117,117,1);
+    -moz-box-shadow: 0px 0px 3px 0px rgba(117,117,117,1);
+    padding: 4px;
+    padding-top: 0;
+    display: none;
+}
+.level1{
+    background-color: #00A065;
+}
+.level2{
+    background-color: #FFE200;
+}
+.level3{
+    background-color: #FF9400;
+}
+.level4{
+    background-color: #E10016;
+}
+.level5{
+    background-color: #74009F;
+}
+.level{
+    height: 6px;
+    padding: 0;
+    padding: 0 !important;
+    color: transparent;
+    line-height: 6px !important;
+}
+.leveltext{
+    height: 20px;
+    color: #222;
+    padding: 0 !important;
+    font-size: 10px;
+    font-weight: bold;
+}
+#table-data{
+    /*border:1px solid #ccc;
+    padding: 12px;
+    background-color: #efefef;*/
+}
+#table-data table th{
+    padding: 4px 1px;
+}
+#table-data table td{
+    padding: 4px 1px;
+}
+#site-details{
+    border:1px solid #ccc;
+    padding: 12px;
+    background-color: #efefef;
+}
+#channel_options{
+    padding: 0;
+    list-style-type: none;
+    padding-top: 2px;
+}
+#channel_options li{
+    display: inline-block;
+    margin-right: 14px;
+}
+#channel_options li label{
+    font-weight: bold;
+}
+#aqi{
+    color: #fff;
+    padding: 10px;
+    display: block;
+    text-align: center;
+    margin: 4px 0;
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 0px 1px 1px rgba(150, 150, 150, 1);
+}
+#aqi small{
+    font-size: 10px;
+}
+#aqi_text{
+    font-weight: bold;
+}
+#aqi-detail{
+    border:1px solid #888;
+    color: #222;
+    padding: 9px;
+    display: block;
+    text-align: center;
+    margin: 4px 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#aqi-detail a{
+    text-decoration: none;
+    color: #424242;
+    display: block;
+}
+#aqi-detail a strong{
+    font-size: 14px;
+    font-weight: bold;
+}

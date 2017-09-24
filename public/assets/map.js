@@ -36,17 +36,13 @@ let preInfowindow = false;
     // getKit();
 
 function myMap() {
-    let vnu = {
-        "lat": 21.0319101029936,
-        "lng": 105.786722296631
-    };
     let mapProp = {
-        center: vnu,
-        zoom: 12,
+        center: new google.maps.LatLng(21.0381934,105.7828466),
+        zoom: 15,
     };
     let map = new google.maps.Map($('#googleMap')[0], mapProp);
-    let marker = new google.maps.Marker({ position: mapProp.center });
-    marker.setMap(map);
+    // let marker = new google.maps.Marker({ position: mapProp.center });
+    // marker.setMap(map);
 
     var myloc = new google.maps.Marker({
         icon: new google.maps.MarkerImage('//maps.gstatic.com/mapfiles/mobile/mobileimgs2.png',
