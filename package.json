@@ -1,0 +1,29 @@
+{
+  "name": "fairweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vantayden/fairweb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vantayden/fairweb/issues"
+  },
+  "homepage": "https://github.com/vantayden/fairweb#readme",
+  "dependencies": {
+    "express": "^4.15.4",
+    "localenv": "^0.2.2",
+    "path": "^0.12.7",
+    "promise": "^8.0.1",
+    "pug": "^2.0.0-rc.4",
+    "request": "^2.82.0",
+    "request-promise": "^4.2.2"
+  }
+}
