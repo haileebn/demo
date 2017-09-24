@@ -25,6 +25,21 @@ let options2 = {
 app.get('/', (req, res) => {
 	res.render('home.pug');
 });
+
+app.get('/mobile', (req, res) => {
+  res.render('mobile.pug');
+});
+app.get('/detail', (req, res) => {
+  res.render('detail.pug');
+});
+
+app.get('/list', (req, res) => {
+  res.render('list.pug');
+});
+app.get('/detail/:kitID', (req, res) => {
+  res.render('detail.pug', {kitID : req.params.kitID});
+});
+
 app.get('/v1/kit', (req, res) => {
 	rp(options)
 	  .then(body => {
@@ -34,7 +49,7 @@ app.get('/v1/kit', (req, res) => {
 
 app.get('/v1/analysis/:kitID', (req, res) => {
 	const kitID = req.params.kitID;
-	options2.uri = `${process.env.URL_ANALYSIS}/${kitID}`
+	options2.uri = `${process.env.URL_ANALYSIS}/${kitID}`;
 	rp(options2)
 	  .then(body => {
 	    res.send(body);
@@ -43,7 +58,7 @@ app.get('/v1/analysis/:kitID', (req, res) => {
 
 app.get('/v1/kit/:kitID', (req, res) => {
 	const kitID = req.params.kitID;
-	options2.uri = `${process.env.URL_KIT}/${kitID}`
+	options2.uri = `${process.env.URL_KIT}/${kitID}`;
 	rp(options2)
 	  .then(body => {
 	    res.send(body);
@@ -51,5 +66,5 @@ app.get('/v1/kit/:kitID', (req, res) => {
 });
 
 app.listen(process.env.PORT, () => {
-	console.log(`Listent: ${process.env.PORT}`);
+	console.log(`listening: ${process.env.PORT}`);
 });

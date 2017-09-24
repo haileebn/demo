@@ -56,18 +56,7 @@ function getKit(map) {
         });
         (function(marker, i) {
             google.maps.event.addListener(marker, "click", function(e) {
-                chartPM25 = null;
-                chartTemp = null;
-                chartHud = null;
-                if (timeInterval) clearTimeout(timeInterval);
-                if (preInfowindow) preInfowindow = null;
-                infowindow.setContent(stringContent);
-                infowindow.open(map, marker);
-
-                // node sau khi infowindow duoc mo len thi moi thay doi duoc dom html cua stringContent
-                $("#title").html(kit[i].name);
-                preInfowindow = infowindow;
-                getAnalysisKitID(kit, kit[i].kitID);
+              window.location.href = `./detail/${kit[i].kitID}`;
                 // console.log(i);
             });
         })(marker, i);
@@ -147,7 +136,7 @@ function getKitID(kit, kitID) {
 	  dataType: "json",
 	  success: function(result) {
 	  	const data = result.kit.lastRecord.data;
-      let IconFeel = "";
+      let iconFeel = "";
       let strAdvice = "";
       let color = "";
        if (data.pm25 <= 50) {
@@ -186,9 +175,8 @@ function getKitID(kit, kitID) {
         stringInfoNode += "PM2.5: <span style=\"color: " + color +";font-size:20px;font-weight:bold;\">" + data.pm25 + "</span> μg/m&sup3<br>";
         stringInfoNode += "Temperature : " + data.temp + "\u00B0C, ";
         stringInfoNode += "Humidity :" + data.hud + "\u0025";
-      $("#advice").css("color", color);
+      $("#advice").css("color", color).html(strAdvice);
       $("#iconFeeling").attr("src", '/imageFeeling/' + iconFeel + '.png');
-      $("#advice").html(strAdvice);
       $("#lastUpdate").html(lastUpdate);
       $("#infoNode").html(stringInfoNode);
 
