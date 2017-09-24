@@ -73,7 +73,6 @@ function getKit(map) {
         })(marker, i);
     	}
     	for (let i = 0; i < station.length; i++) {
-    		const infoStation = `${station[i].name}\nPM25: ${station[i].lastRecord}`
 	      let location = { lat: Number(station[i].location[0]), lng: Number(station[i].location[1]) };
 	      let colorIconMarker;
 	      let lastPm25 = station[i].lastRecord;
@@ -88,7 +87,7 @@ function getKit(map) {
           icon: '/image/' + colorIconMarker + '.png',
           label: { color: '#fff', fontSize: '15px', fontWeight: '600', text: "" + lastPm25 },
           map: map,
-          title: infoStation
+          title: station[i].name
         });
     	}
     }  
@@ -148,45 +147,46 @@ function getKitID(kit, kitID) {
 	  dataType: "json",
 	  success: function(result) {
 	  	const data = result.kit.lastRecord.data;
-      let stringInfoNode = "";
-      let lastUpdate = result.kit.lastRecord.time;
-      lastUpdate = "Last Update:" + moment(lastUpdate).format('YYYY-MM-DD, HH:mm:ss');
-      stringInfoNode += "PM2.5 :" + data.pm25 + " μg/m&sup3<br>";
-      stringInfoNode += "Temperature : " + data.temp + "\u00B0C, ";
-      stringInfoNode += "Humidity :" + data.hud + "\u0025";
       let IconFeel = "";
       let strAdvice = "";
+      let color = "";
        if (data.pm25 <= 50) {
         iconFeel = "feeling_lv1";
         strAdvice = "Hãy đi chơi đâu đó.";
-        $("#advice").css("color","#00A065");
+        color = "#00A065";
        }
         else if (data.pm25 <= 100) {
           iconFeel = "feeling_lv2";
           strAdvice = "Hạn chế cho trẻ em ra ngoài chơi.";
-          $("#advice").css("color","#FFE200");
-
+          color = "#FFE200";
         }
         else if (data.pm25 <= 150) {
           iconFeel = "feeling_lv3";
           strAdvice = "Không phải thời điểm ra ngoài thích hợp với người nhạy cảm.";
-          $("#advice").css("color","#FF9400");
+         color = "#FF9400";
         }
         else if (data.pm25 <= 200) {
           iconFeel = "feeling_lv4";
           strAdvice = "Mọi người hạn chế ra ngoài!";
-          $("#advice").css("color","#E10016");
+         color = "#E10016";
         }
         else if (data.pm25 <= 300) {
           iconFeel = "feeling_lv5";
           strAdvice = "Cảnh báo cấp 1!!!";
-          $("#advice").css("color","#74009F");
+         color = "#74009F";
         }
         else {
           iconFeel = "feeling_lv6";
           strAdvice = "Cảnh báo khẩn cấp!!!";
-          $("#advice").css("color","#8B0017");
+         color = "#8B0017";
         }
+        let stringInfoNode = "";
+        let lastUpdate = result.kit.lastRecord.time;
+        lastUpdate = "Last Update:" + moment(lastUpdate).format('YYYY-MM-DD, HH:mm:ss');
+        stringInfoNode += "PM2.5: <span style=\"color: " + color +";font-size:20px;font-weight:bold;\">" + data.pm25 + "</span> μg/m&sup3<br>";
+        stringInfoNode += "Temperature : " + data.temp + "\u00B0C, ";
+        stringInfoNode += "Humidity :" + data.hud + "\u0025";
+      $("#advice").css("color", color);
       $("#iconFeeling").attr("src", '/imageFeeling/' + iconFeel + '.png');
       $("#advice").html(strAdvice);
       $("#lastUpdate").html(lastUpdate);
