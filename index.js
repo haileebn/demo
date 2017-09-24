@@ -38,6 +38,12 @@ app.get('/add', (req, res) => {
   res.render('add.pug');
 });
 
+
+app.get('/info', (req, res) => {
+	res.header('content-type', 'application/json');
+  	res.send({id: 'FAirKit_000022'});
+});
+
 app.get('/list', (req, res) => {
   res.render('list.pug');
 });

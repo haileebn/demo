@@ -99,7 +99,6 @@ function getKitID(kitID) {
       $("#lastUpdate").html(lastUpdate);
       $("#infoNode").html(stringInfoNode);
       $("#title").html(result.kit.name);
-
       timeInterval = setTimeout(function() {
         getKitID(kitID);
       }, 10000);
