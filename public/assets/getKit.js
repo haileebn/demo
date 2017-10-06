@@ -15,9 +15,10 @@ function infoLatLng(lat, lng) {
 
 function handleDate(strDate, hour) {
 	// body...
-	const day = strDate.slice(0,2);
-	const month = strDate.slice(3,5);
-	const year = strDate.slice(6,10);
+    strDate = strDate.split('/');
+	const day = strDate[0];
+	const month = strDate[1];
+	const year = strDate[2];
   let time = new Date();
   time.setYear(year);
   time.setMonth(month - 1);
