@@ -32,24 +32,24 @@ Meteor.startup(() => {
 
     data.forEach(link => Links.insert(link));
   }
-  if (ListKits.find().count() === 0) {
-    // const json =
-    const data = [
-        {
-            "KitID": "FAirKit_000001",
-            "Name": "Fimo 518",
-            "Location": [21.038189,105.7827482],
-            "PM25": 22,
-            "CreatedTime": 1508383622
-        },
-        {
-            "KitID": "FAirKit_000001",
-            "Name": "Fimo 408",
-            "Location": [21.038189,105.7837482],
-            "PM25": 54,
-            "CreatedTime": 1508383620
-        },
-    ];
-    data.forEach(kit => ListKits.insert(kit));
-  }
+  // if (ListKits.find().count() === 0) {
+  //   // const json =
+  //   const data = [
+  //       {
+  //           "KitID": "FAirKit_000001",
+  //           "Name": "Fimo 518",
+  //           "Location": [21.038189,105.7827482],
+  //           "PM25": 22,
+  //           "CreatedTime": 1508383622
+  //       },
+  //       {
+  //           "KitID": "FAirKit_000001",
+  //           "Name": "Fimo 408",
+  //           "Location": [21.038189,105.7837482],
+  //           "PM25": 54,
+  //           "CreatedTime": 1508383620
+  //       },
+  //   ];
+  //   data.forEach(kit => ListKits.insert(kit));
+  // }
 });

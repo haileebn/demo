@@ -10,7 +10,7 @@ import '../../components/detailKit/detailKit.js';
 
 const url = "http://localhost:1111";
 let timeInterval = null;
-
+let myChart = null;
 Template.App_home.events({
     'submit .info-link-add'(event) {
         event.preventDefault();
@@ -46,7 +46,8 @@ Template.App_home.events({
     },
 });
 Template.App_home.onRendered(() => {
-    let mymap = initMap('pk.eyJ1IjoiaGFpbGVlYm4iLCJhIjoiY2o4eHl5NHY2MjNzczJ6bXJodzVrbDY2OCJ9.Gr7kFFa3FAZarwChakmDnA');
+    const accessTokenMap = 'pk.eyJ1IjoiaGFpbGVlYm4iLCJhIjoiY2o4eHl5NHY2MjNzczJ6bXJodzVrbDY2OCJ9.Gr7kFFa3FAZarwChakmDnA';
+    let mymap = initMap(accessTokenMap, [21.038189,105.7827482]);
     // ham tracker cho phep truy van den Database
     Tracker.autorun(() => {
         const allKit = getAllKit().data;
@@ -55,31 +56,23 @@ Template.App_home.onRendered(() => {
         allKit.forEach((kit, index) => {
             // console.log(kit.KitID, "---",index);
             marker = L.marker(kit.Location).addTo(myFeatureGroup);
-            marker.on("click", function (event) {
-                const tab = $("#detailKit-wrapper");
-                let clickedMarker = event.layer;
+            marker.on("click", onClickMarker);
 
-                if(timeInterval) {
-                    // console.log("click maker");
-                    clearTimeout(timeInterval);
-                    tab.toggleClass("active", false);
-                }
-                setTimeout(() => {
-                    tab.toggleClass("active", true);
-                }, 200);
-                getLastDataOfKit(kit.KitID);
-                getAnalysisOfKitInDay(kit.KitID);
-                Session.set("kitId", kit.KitID);
+            marker.bindPopup(`<b>${kit.Name}</b><br>${kit.KitID}`, { closeButton: false });
+            marker.on('mouseover', function (e) {
+                this.openPopup();
+            });
+            marker.on('mouseout', function (e) {
+                this.closePopup();
             });
         });
-        // marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
         mymap.on('click', onMapClick);
     });
 });
-function initMap(accessToken) {
+function initMap(accessToken, latLng) {
     const mymap = L.map('mapid',{
         zoomControl: false,
-    }).setView([21.038189,105.7827482], 18);
+    }).setView(latLng, 14);
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18,
@@ -93,7 +86,7 @@ function initMap(accessToken) {
     return mymap;
 }
 
-function onMapClick(e) {
+function onMapClick() {
     const detailWrapper = $("#detailKit-wrapper");
     if(detailWrapper.hasClass("active")){
         if(timeInterval){
@@ -104,6 +97,24 @@ function onMapClick(e) {
         detailWrapper.toggleClass("active", false);
     }
 }
+
+function onClickMarker() {
+    const tab = $("#detailKit-wrapper");
+    // let clickedMarker = event.layer;
+
+    if(timeInterval) {
+        // console.log("click maker");
+        clearTimeout(timeInterval);
+        tab.toggleClass("active", false);
+    }
+    setTimeout(() => {
+        tab.toggleClass("active", true);
+    }, 200);
+    getLastDataOfKit(kit.KitID);
+    getAnalysisOfKitInDay(kit.KitID);
+    Session.set("kitId", kit.KitID);
+}
+
 function getAllKit() {
     return $.parseJSON($.ajax({
         type: "GET",
@@ -152,6 +163,10 @@ function drawCircle(id, ana = "") {
     drawC(ctx, '#00A242', options.lineWidth, radius, options.percent / 500, divValue);
 }
 function drawChartAnalysis(kit, type) {
+    if (myChart) {
+        myChart.destroy();
+        // console.log("okokok")
+    }
     let labels = [];
     if (type === "Week"){
         labels = handleLabels(type, kit.Date);
@@ -160,7 +175,7 @@ function drawChartAnalysis(kit, type) {
     }
     console.log(labels);
     let ctx = document.getElementById("chartpm25").getContext('2d');
-    let myChart = new Chart(ctx, {
+    myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,

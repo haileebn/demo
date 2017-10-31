@@ -2,7 +2,7 @@
 // import { ListKits } from '/imports/api/collections/collections.js';
 import { Meteor } from 'meteor/meteor';
 import './detailKit.html';
-const url = "http://localhost:1111/kit";
+const url = "http://localhost:1111";
 Template.detailKit.onCreated(function () {
   // // Meteor.subscribe('links.all');
   //
