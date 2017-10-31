@@ -1,0 +1,154 @@
+<template name="detailKit">
+    <div id="detailKit-wrapper" class="col-xs-4">
+        <!--<ul class="detailKit-nav">-->
+            <div id="close-detail-kit" class="pull-right show-mobile"><span class="fui-cross"></span></div>
+        <!--</ul>-->
+        <div class="row" id="lastRecord">
+            <div class="col-xs-12">
+                <div class="row" id="detailLastRecord">
+                    <div class="col-xs-4" id="lastPM25">
+                        <div class="row">
+                            <div class="col-xs-10 col-xs-offset-2" id="graph" data-percent="69">
+                                <div class="row">
+                                    <div id="detailPM25">
+                                        <div id="valuePM25"></div>
+                                        <div id="unitPM25"></div></div>
+                                    <canvas></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-8" id="lastInfo">
+                        <div class="row" id="distanceLocation">
+                            <div class="col-xs-12">
+                                4.5km from your location
+                            </div>
+                        </div>
+                        <div class="row" id="notification">
+                            <div class="col-xs-12">
+                                <div class="">
+                                    notification
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="tempHud">
+                            <div class="col-xs-6">
+                                <div class="" id="temp">
+                                    <div class="">
+                                        <span>TEMP</span><br/>
+                                        <span>40.35</span>&#8451;
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="" id="hud">
+                                    <div class="">
+                                        <span>HUM</span><br/>
+                                        <span>90.88</span>&#37;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="viewMore">
+                            <div class="col-xs-12">
+                                <a href="">720 views ...</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="aqiIndexs">
+                    <div class="col-xs-12">
+
+                    </div>
+                </div>
+                <div class="row" id="btnOption">
+                    <div class="col-xs-6">
+                        <div class="btn-me btn-embossed btn-default col-xs-8 col-xs-offset-3">
+                            <span class="glyphicon glyphicon-share"></span> Share
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="btn-me btn-embossed btn-default col-xs-8 col-xs-offset-1">
+                            <span class="glyphicon glyphicon-floppy-save"></span> Save
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="analysis">
+           <div class="col-xs-12">
+               <div class="row header-analysis">
+                   <div class="col-xs-12 nopadding">
+                       <span>Daily Average: 12</span>
+                       <span class="pull-right">
+                           <a href="#" id="day">Day</a>
+                           <a href="#" id="week">week</a>
+                           <!--<a href="#" id="year">Year</a>-->
+                       </span>
+                   </div>
+               </div>
+               <div class="row container-analysis">
+                   <div class="col-xs-12">
+                       <div class="row record-current">
+                           <div class="col-xs-4">
+                               <div>Sat Nov 5 21:47</div>
+                           </div>
+                           <div class="col-xs-8">
+                               <div class="row" id="detailAnalysisRecord">
+                                   <div class="col-xs-4" id="lastPM25Analysis">
+                                       <div class="row">
+                                           <div class="col-xs-10 col-xs-offset-3" id="graphAnalysis">
+                                               <div class="row">
+                                                   <div id="detailPM25Analysis">
+                                                       <div id="valuePM25Analysis"></div>
+                                                       <div id="unitPM25Analysis"></div></div>
+                                                   <canvas></canvas>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-xs-8" id="lastInfoAnalysis">
+                                       <div class="row" id="notificationAnalysis">
+                                           <div class="col-xs-12">
+                                               <div class="">
+                                                   notification
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row" id="tempHudAnalysis">
+                                           <div class="col-xs-6">
+                                               <div class="" id="tempAnalysis">
+                                                   <div class="">
+                                                       <span>TEMP</span><br/>
+                                                       <span>40.35</span>&#8451;
+                                                   </div>
+                                               </div>
+                                           </div>
+                                           <div class="col-xs-6">
+                                               <div class="" id="hudAnalysis">
+                                                   <div class="">
+                                                       <span>HUM</span><br/>
+                                                       <span>90.88</span>&#37;
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                       <div class="row chart-analysis">
+                           <div class="col-xs-12">
+                               <div class="row chart">
+                                   <div class="col-xs-12">
+                                       <canvas id="chartpm25"></canvas>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+        </div>
+    </div>
+</template>
