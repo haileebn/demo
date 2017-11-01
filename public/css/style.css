@@ -319,6 +319,20 @@ div#unitPM25 {
 #analysis .header-analysis{
     height: 20px;
 }
+
+
+
+/*end style row header-analysis*/
+/*start style row container-analysis*/
+
+#analysis .container-analysis{
+    height: calc(100% - 20px);
+    /*padding: 0 3%;*/
+}
+.container-analysis > div {
+    border: 1px solid #a2a2a2;
+    padding: 0 5px;
+}
 #graphAnalysis canvas {
     display: block;
     position:absolute;
@@ -328,18 +342,6 @@ div#unitPM25 {
     left: auto;
     width: 100%;
     height: auto;
-}
-
-
-/*end style row header-analysis*/
-/*start style row container-analysis*/
-#analysis .container-analysis{
-    height: calc(100% - 20px);
-    /*padding: 0 3%;*/
-}
-.container-analysis > div {
-    border: 1px solid #a2a2a2;
-    padding: 0 5px;
 }
 div#detailPM25Analysis{
     color:#555;

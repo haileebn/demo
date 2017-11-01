@@ -56,15 +56,11 @@ Template.App_home.onRendered(() => {
         allKit.forEach((kit, index) => {
             // console.log(kit.KitID, "---",index);
             marker = L.marker(kit.Location).addTo(myFeatureGroup);
-            marker.on("click", onClickMarker);
+            marker.on("click", L.bind(onClickMarker, null, kit));
 
             marker.bindPopup(`<b>${kit.Name}</b><br>${kit.KitID}`, { closeButton: false });
-            marker.on('mouseover', function () {
-                this.openPopup();
-            });
-            marker.on('mouseout', function () {
-                this.closePopup();
-            });
+            marker.on('mouseover', mouseOverMarker);
+            marker.on('mouseout', mouseOutMarker);
         });
         mymap.on('click', onMapClick);
     });
@@ -98,7 +94,7 @@ function onMapClick() {
     }
 }
 
-function onClickMarker() {
+function onClickMarker(kit) {
     const tab = $("#detailKit-wrapper");
     // let clickedMarker = event.layer;
 
@@ -110,9 +106,17 @@ function onClickMarker() {
     setTimeout(() => {
         tab.toggleClass("active", true);
     }, 200);
-    getLastDataOfKit(this.KitID);
-    getAnalysisOfKitInDay(this.KitID);
-    Session.set("kitId", this.KitID);
+    getLastDataOfKit(kit.KitID);
+    getAnalysisOfKitInDay(kit.KitID);
+    Session.set("kitId", kit.KitID);
+}
+
+function mouseOverMarker() {
+    this.openPopup();
+}
+
+function mouseOutMarker() {
+    this.closePopup();
 }
 
 function getAllKit() {
@@ -173,7 +177,7 @@ function drawChartAnalysis(kit, type) {
     } else if (type === "Day") {
         labels = handleLabels(type, kit.Date, kit.StartHour);
     }
-    console.log(labels);
+    // console.log(labels);
     let ctx = document.getElementById("chartpm25").getContext('2d');
     myChart = new Chart(ctx, {
         type: 'line',
@@ -224,6 +228,7 @@ function getLastDataOfKit(KitID) {
         type: "GET",
         url: `${url}/kit/${KitID}`,
         success: function(result){
+            // console.log(result);
             $("#graph").attr("data-percent", result.data["PM2.5"]);
             $("#temp > div > span:last-child").html(result.data["temp"]);
             $("#hud > div > span:last-child").html(result.data["hud"]);
@@ -244,7 +249,7 @@ function getAnalysisOfKitInDay(KitID) {
         type: "GET",
         url: `${url}/analysis/day/${KitID}`,
         success: function(result){
-            console.log(result);
+            // console.log(result);
             $("#graphAnalysis").attr("data-percent", result["PM2.5"][result["PM2.5"].length - 1]);
             $("#tempAnalysis > div > span:last-child").html(result["Temperature"][result["Temperature"].length - 1]);
             $("#hudAnalysis > div > span:last-child").html(result["Humidity"][result["Humidity"].length - 1]);
@@ -267,7 +272,7 @@ function getAnalysisOfKitInWeek(KitID) {
         type: "GET",
         url: `${url}/analysis/week/${KitID}`,
         success: function(result){
-            console.log(result);
+            // console.log(result);
             $("#graphAnalysis").attr("data-percent", result["PM2.5"][result["PM2.5"].length - 1]);
             $("#tempAnalysis > div > span:last-child").html(result["Temperature"][result["Temperature"].length - 1]);
             $("#hudAnalysis > div > span:last-child").html(result["Humidity"][result["Humidity"].length - 1]);
