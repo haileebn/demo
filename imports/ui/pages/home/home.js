@@ -110,9 +110,9 @@ function onClickMarker() {
     setTimeout(() => {
         tab.toggleClass("active", true);
     }, 200);
-    getLastDataOfKit(kit.KitID);
-    getAnalysisOfKitInDay(kit.KitID);
-    Session.set("kitId", kit.KitID);
+    getLastDataOfKit(this.KitID);
+    getAnalysisOfKitInDay(this.KitID);
+    Session.set("kitId", this.KitID);
 }
 
 function getAllKit() {
