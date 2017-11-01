@@ -59,10 +59,10 @@ Template.App_home.onRendered(() => {
             marker.on("click", onClickMarker);
 
             marker.bindPopup(`<b>${kit.Name}</b><br>${kit.KitID}`, { closeButton: false });
-            marker.on('mouseover', function (e) {
+            marker.on('mouseover', function () {
                 this.openPopup();
             });
-            marker.on('mouseout', function (e) {
+            marker.on('mouseout', function () {
                 this.closePopup();
             });
         });
