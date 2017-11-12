@@ -1,6 +1,10 @@
 * {
     box-sizing: border-box;
+    color: #919191;
+    /*font-family: Roboto;*/
+    font-weight: 400;
 }
+
 html, body {
     height: 100%;
     overflow-y: hidden;
@@ -8,6 +12,8 @@ html, body {
     margin: 0 !important;
     -webkit-text-size-adjust: none;
     position: relative;
+
+
 }
 
 /* css for page home*/
@@ -26,6 +32,10 @@ html, body {
     background-color: #fff;
     width: 0;
     /*opacity: 0.5;*/
+}
+#navbar a{
+    color: #787878;
+
 }
 .btn-mobile{
     top: 3%;
@@ -47,7 +57,7 @@ html, body {
     height: 100%;
 }
 .input-group-btn > .btn{
-    border: 1px solid #bdc3c7;
+    border: 2px solid #bdc3c7;
 }
 .input-group-btn > .btn:hover{
     /*border-left: 1px solid;*/
@@ -75,10 +85,23 @@ html, body {
     width: 100%;
 }
 
+/*start css map*/
 #mapid {
     min-height: 100%;
     height: auto !important;
 }
+.leaflet-div-icon {
+    background: transparent !important;
+    border: none !important;
+}
+.leaflet-marker-icon .number{
+    position: relative;
+    top: -35px;
+    font-size: 14px;
+    width: 35px;
+    text-align: center;
+}
+/*end css map*/
 
 .nopadding {
     padding: 0 !important;
@@ -92,8 +115,8 @@ html, body {
     right: 0;
     width: 100%;
     background: rgb(255, 255, 255);
-    border-left: solid 1px #a2a2a2;
-    border-top: solid 1px #a2a2a2;
+    border-left: solid 2px #bdc3c7;
+    border-top: solid 2px #bdc3c7;
 
     position: fixed;
     height: 100%;
@@ -154,12 +177,22 @@ html, body {
 .record-current > div,
 .chart-analysis > div,
 .chart,
-.chart > div{
+.chart > div,
+#aqiIndexs > div{
     height: 100%;
+}
+
+#nameKit{
+    text-align: center;
+}
+#nameKit :first-child{
+    color: #4c4c4c;
+    font-size: 18px;
 }
 #detailLastRecord{
     height:50%;
 }
+
 
 #lastPM25{
     /*background-color: #00a1cb;*/
@@ -215,14 +248,29 @@ div#unitPM25 {
 }
 
 #distanceLocation{
+    /*font-size: 12px;*/
+}
+
+#distanceLocation :first-child{
     font-size: 12px;
+    color: #666666;
 }
 #viewMore{
     padding: 2px 0 0 0;
-    /*margin: 5px 0;*/
 }
+#viewMore :first-child,
+#typePM :last-child :first-child{
+    color: deepskyblue;
+}
+#viewMore :first-child:hover,
+#typePM :last-child :first-child:hover{
+    text-decoration: none;
+    color: #008dff;
+    cursor: pointer;
+}
+
 #notification > div > div{
-    background-color: #00A242;
+    /*background-color: #00A242;*/
     color: #fff;
     text-align: center;
     padding: 5px 0;
@@ -254,7 +302,7 @@ div#unitPM25 {
 #temp, #hud,
 #tempAnalysis, #hudAnalysis{
     width: 100%;
-    border: solid 1px #a2a2a2;
+    border: solid 2px #bdc3c7;
     /*padding-left: 20%;*/
 }
 #temp > div, #hud > div{
@@ -270,8 +318,69 @@ div#unitPM25 {
 }
 /*end style row last record*/
 
-#btnOption, #aqiIndexs{
+#btnOption{
+    height: 20%;
+}
+
+#aqiIndexs{
     height: 25%;
+}
+#pointer{
+    max-height: 20%;
+}
+#pointer > span{
+    /*height:30%;*/
+    top: -4px;
+    font-size: 20px;
+    left: -10px;
+    color: deepskyblue;
+    position: relative;
+}
+#aqiIndexs #pointer,
+#aqiIndexs #typePM,
+#aqiIndexs #barIndex {
+    padding: 0 5%;
+}
+
+#aqiIndexs #barIndex{
+    height:50%;
+    display: block;
+}
+#rulerColor,
+#rulerIndex{
+    width: 100%;
+    height: 50%;
+    font-size: 12px;
+    text-align: center;
+}
+#rulerColor .region-index{
+    background-color: blue;
+    width: 16.66%;
+    float: left;
+    height: 100%;
+}
+#rulerIndex .region-index{
+    width: 16.66%;
+    float: left;
+    height: 100%;
+}
+#rulerColor #lv1{
+    background-color: #009966;
+}
+#rulerColor #lv2{
+    background-color: #FFDE33;
+}
+#rulerColor #lv3{
+    background-color: #FF9933;
+}
+#rulerColor #lv4{
+    background-color: #CC0033;
+}
+#rulerColor #lv5{
+    background-color: #660099;
+}
+#rulerColor #lv6{
+    background-color: #7E0023;
 }
 #btnOption .btn-me{
     display: inline-block;
@@ -315,12 +424,28 @@ div#unitPM25 {
     height: 100%;
 }
 
+
 /*start style row header-analysis*/
 #analysis .header-analysis{
     height: 20px;
 }
 
-
+#day,
+#week{
+    color: #919191;
+}
+#day:hover,
+#week:hover{
+    color: #737373;
+    font-weight: 600;
+    text-decoration: none;
+}
+#day.active,
+#week.active{
+    color: #595959;
+    text-decoration: none;
+    font-weight: 800;
+}
 
 /*end style row header-analysis*/
 /*start style row container-analysis*/

@@ -8,7 +8,7 @@ import '../../components/map/map.js';
 import '../../components/navbar/navbar.js';
 import '../../components/detailKit/detailKit.js';
 
-const url = "http://localhost:1111";
+const url = "http://118.70.72.15:2222";
 let timeInterval = null;
 let myChart = null;
 Template.App_home.events({
@@ -38,10 +38,18 @@ Template.App_home.events({
 
     },
     'click #day'(){
+        const elDay = $("#day");
+        const elWeek = $("#week");
+        elWeek.toggleClass("active", false);
+        elDay.toggleClass("active", true);
         getAnalysisOfKitInDay(Session.get("kitId"));
 
     },
     'click #week'(){
+        const elDay = $("#day");
+        const elWeek = $("#week");
+        elWeek.toggleClass("active", true);
+        elDay.toggleClass("active", false);
         getAnalysisOfKitInWeek(Session.get("kitId"));
     },
 });
@@ -53,9 +61,57 @@ Template.App_home.onRendered(() => {
         const allKit = getAllKit().data;
         let myFeatureGroup = L.featureGroup().addTo(mymap);//.on("click", groupClick);
         let marker;
+
         allKit.forEach((kit, index) => {
             // console.log(kit.KitID, "---",index);
-            marker = L.marker(kit.Location).addTo(myFeatureGroup);
+            // console.log(L.AwesomeMarkers.icon);
+            L.NumberedDivIcon = L.Icon.extend({
+                options: {
+                    iconUrl: '/img/marker-icon.png',
+                    number: '',
+                    shadowUrl: null,
+                    // iconSize: new L.Point(25, 41),
+                    // iconAnchor: new L.Point(13, 41),
+                    // popupAnchor: new L.Point(0, -33),
+                    /*
+                    iconAnchor: (Point)
+                    popupAnchor: (Point)
+                    */
+                    className: 'leaflet-div-icon'
+                },
+
+                createIcon: function () {
+                    let div = document.createElement('div');
+                    let img = this._createImg(this.options['iconUrl']);
+                    let numdiv = document.createElement('div');
+                    numdiv.setAttribute ( "class", "number" );
+                    numdiv.innerHTML = this.options['number'] || '';
+                    div.appendChild ( img );
+                    div.appendChild ( numdiv );
+                    this._setIconStyles(div, 'icon');
+                    return div;
+                },
+
+//you could change this to add a shadow like in the normal marker if you really wanted
+                createShadow: function () {
+                    return null;
+                }
+            });
+
+            let markerIcon = L.icon({
+                iconUrl: '/img/marker-icon.png',
+                // title: "sdsadsadsa",
+                // number: "1",
+                iconSize:     [35, 35], // size of the icon
+                // shadowSize:   [50, 64], // size of the shadow
+                // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+                // shadowAnchor: [4, 62],  // the same for the shadow
+                // popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+            });
+            // console.log();
+            marker = L.marker(kit.Location, { icon: new L.NumberedDivIcon({number: kit["PM2.5"]})}).addTo(myFeatureGroup);
+            // marker.options.icon.setText('21');
+
             marker.on("click", L.bind(onClickMarker, null, kit));
 
             marker.bindPopup(`<b>${kit.Name}</b><br>${kit.KitID}`, { closeButton: false });
@@ -84,6 +140,11 @@ function initMap(accessToken, latLng) {
 
 function onMapClick() {
     const detailWrapper = $("#detailKit-wrapper");
+    const elDay = $("#day");
+    const elWeek = $("#week");
+    elDay.toggleClass("active", true);
+    elWeek.toggleClass("active", false);
+
     if(detailWrapper.hasClass("active")){
         if(timeInterval){
             clearTimeout(timeInterval);
@@ -96,8 +157,11 @@ function onMapClick() {
 
 function onClickMarker(kit) {
     const tab = $("#detailKit-wrapper");
-    // let clickedMarker = event.layer;
-
+    const elDay = $("#day");
+    const elWeek = $("#week");
+    elDay.toggleClass("active", true);
+    elWeek.toggleClass("active", false);
+    console.log(this.L.Marker.icon);
     if(timeInterval) {
         // console.log("click maker");
         clearTimeout(timeInterval);
@@ -106,6 +170,7 @@ function onClickMarker(kit) {
     setTimeout(() => {
         tab.toggleClass("active", true);
     }, 200);
+    $("#nameKit").find("strong").html(kit.Name);
     getLastDataOfKit(kit.KitID);
     getAnalysisOfKitInDay(kit.KitID);
     Session.set("kitId", kit.KitID);
@@ -135,6 +200,9 @@ function drawC(ctx, color, lineWidth, radius, percent, divValue) {
     ctx.lineWidth = lineWidth;
     ctx.stroke();
     divValue.css("color", color);
+    // console.log(color);
+    // console.log(color);
+
 }
 function drawCircle(id, ana = "") {
     let el = document.getElementById(id); // get canvas
@@ -145,7 +213,7 @@ function drawCircle(id, ana = "") {
         lineWidth: el.getAttribute('data-line') || 12,
         rotate: el.getAttribute('data-rotate') || 0
     };
-    let canvas = $(`#${id} canvas`)[0];
+    let canvas = $(`#${id}`).find(`canvas`)[0];
     let divValue = $(`#valuePM25${ana}`);
     let divUnit = $(`#unitPM25${ana}`);
     divValue.html(options.percent);
@@ -162,9 +230,11 @@ function drawCircle(id, ana = "") {
     ctx.rotate((-1 / 2 + options.rotate / 180) * Math.PI); // rotate -90 deg
 
     let radius = (options.size - options.lineWidth) / 2;
+    // console.log(options.percent);
+    let color = getColorPMByLevel(checkLevelPM(options.percent));
 
     drawC(ctx, '#CFD0D2', options.lineWidth, radius, 100 / 100, divValue);
-    drawC(ctx, '#00A242', options.lineWidth, radius, options.percent / 500, divValue);
+    drawC(ctx, color, options.lineWidth, radius, options.percent / 500, divValue);
 }
 function drawChartAnalysis(kit, type) {
     if (myChart) {
@@ -229,9 +299,14 @@ function getLastDataOfKit(KitID) {
         url: `${url}/kit/${KitID}`,
         success: function(result){
             // console.log(result);
+            // $('#temp').css('width', '150px');
+            // $("#nameKit strong").html(result);
+            let color = getColorPMByLevel(checkLevelPM(result.data["PM2.5"]));
             $("#graph").attr("data-percent", result.data["PM2.5"]);
-            $("#temp > div > span:last-child").html(result.data["temp"]);
-            $("#hud > div > span:last-child").html(result.data["hud"]);
+            $("#temp").find("> div > span:last-child").html(result.data["temp"]);
+            $("#hud").find("> div > span:last-child").html(result.data["hud"]);
+            $("#notification").find("div div").css("background", color);
+            handlePointAqiIndex(result.data["PM2.5"]);
             drawCircle('graph');
             console.log(`show data of kit : ${result.KitID}`);
             timeInterval = setTimeout(() => {
@@ -251,8 +326,8 @@ function getAnalysisOfKitInDay(KitID) {
         success: function(result){
             // console.log(result);
             $("#graphAnalysis").attr("data-percent", result["PM2.5"][result["PM2.5"].length - 1]);
-            $("#tempAnalysis > div > span:last-child").html(result["Temperature"][result["Temperature"].length - 1]);
-            $("#hudAnalysis > div > span:last-child").html(result["Humidity"][result["Humidity"].length - 1]);
+            $("#tempAnalysis").find("> div > span:last-child").html(result["Temperature"][result["Temperature"].length - 1]);
+            $("#hudAnalysis").find("> div > span:last-child").html(result["Humidity"][result["Humidity"].length - 1]);
 
             drawCircle('graphAnalysis', 'Analysis');
             drawChartAnalysis(result, result.AnalysisType);
@@ -274,8 +349,8 @@ function getAnalysisOfKitInWeek(KitID) {
         success: function(result){
             // console.log(result);
             $("#graphAnalysis").attr("data-percent", result["PM2.5"][result["PM2.5"].length - 1]);
-            $("#tempAnalysis > div > span:last-child").html(result["Temperature"][result["Temperature"].length - 1]);
-            $("#hudAnalysis > div > span:last-child").html(result["Humidity"][result["Humidity"].length - 1]);
+            $("#tempAnalysis").find("> div > span:last-child").html(result["Temperature"][result["Temperature"].length - 1]);
+            $("#hudAnalysis").find("> div > span:last-child").html(result["Humidity"][result["Humidity"].length - 1]);
 
             drawCircle('graphAnalysis', 'Analysis');
             drawChartAnalysis(result, result.AnalysisType);
@@ -319,4 +394,42 @@ function  handleLabels(analysisType, dateCurrent, start) {
     }
     // console.log(labels);
     return labels;
+}
+
+function handlePointAqiIndex(quantity) {
+    let el = $("#pointer").find("span");
+    let index = quantity/3;
+
+    if(quantity > 300)
+        index = (quantity + 700)/12;
+    else if(quantity > 200)
+        index = (quantity + 200)/6;
+    // console.log(index);
+    el.css({
+        "padding-left": `${index}%`
+    });
+}
+function checkLevelPM(quantity) {
+    if (quantity > 300) return 6;
+    else if(quantity > 200) return 5;
+    else if(quantity > 150) return 4;
+    else if(quantity > 100) return 3;
+    else if(quantity > 50) return 2;
+    else return 1;
+}
+function getColorPMByLevel(lv) {
+    const PMColorLv = {
+        lv1:"#009966",
+        lv2:"#FFDE33",
+        lv3:"#FF9933",
+        lv4:"#CC0033",
+        lv5:"#660099",
+        lv6:"#7E0023"
+    };
+    if (lv === 6) return PMColorLv.lv6;
+    else if(lv === 5) return PMColorLv.lv5;
+    else if(lv === 4) return PMColorLv.lv4;
+    else if(lv === 3) return PMColorLv.lv3;
+    else if(lv === 2) return PMColorLv.lv2;
+    else return PMColorLv.lv1;
 }
