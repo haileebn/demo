@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
+import { Promise } from 'meteor/promise';
 
 import './home.html';
 
@@ -48,23 +49,55 @@ Template.App_home.events({
         const elWeek = $("#week");
         elWeek.toggleClass("active", false);
         elDay.toggleClass("active", true);
-        getAnalysisOfKitInDay(Session.get("kitId"));
-
+        drawChartAnalysisInDay(Session.get("kitId"));
     },
     'click #week'(){
         const elDay = $("#day");
         const elWeek = $("#week");
         elWeek.toggleClass("active", true);
         elDay.toggleClass("active", false);
-        getAnalysisOfKitInWeek(Session.get("kitId"));
+        drawChartAnalysisInWeek(Session.get("kitId"));
     },
+    'click #chartpm25'(e){
+        e.preventDefault();
+        const activePoints = myChart.getElementAtEvent(e);
+        const graphAnalysis = $("#graphAnalysis");
+        const kit = Session.get("kitId");
+        const typeChartAnalysis = ($("#day").hasClass("active") === true ? "day" : "week");
+        console.log(typeChartAnalysis);
+        // click vao diem bat ki
+        if(activePoints.length === 0) return;
+
+        // let theElement = myChart.config.data.datasets[activePoints[0]._datasetIndex].data[activePoints[0]._index];
+
+        console.log(activePoints[0]._index, kit);
+        if(typeChartAnalysis === "day") {
+            getAnalysisOfKitOneHour(kit,activePoints[0]._index)
+                .then((result) => {
+                    // console.log(result)
+                    updateCircle(result, "Analysis");
+                })
+            // updateCircle(result, "Analysis");
+        } else {
+            getAnalysisOfKitOneDay(kit,activePoints[0]._index)
+                .then((result) => {
+                    // console.log(result);
+                    updateCircle(result, "Analysis");
+                });
+            // updateCircle(result, "Analysis");
+        }
+        // console.log(activePoints);
+    },
+
 });
 Template.App_home.onRendered(() => {
     const accessTokenMap = 'pk.eyJ1IjoiaGFpbGVlYm4iLCJhIjoiY2o4eHl5NHY2MjNzczJ6bXJodzVrbDY2OCJ9.Gr7kFFa3FAZarwChakmDnA';
     let mymap = initMap(accessTokenMap, [21.038189,105.7827482]);
     // ham tracker cho phep truy van den Database
-    Tracker.autorun(() => {
-        const allKit = getAllKit().data;
+    // Tracker.autorun(() => {
+    getAllKit().success((kits) => {
+        const allKit = kits.data;
+        // console.log(kits);
         let myFeatureGroup = L.featureGroup().addTo(mymap);//.on("click", groupClick);
         let marker;
 
@@ -198,7 +231,7 @@ function onClickMarker(kit, index) {
     }, 200);
     $("#nameKit").find("strong").html(kit.Name);
     getLastDataOfKit(kit.KitID);
-    getAnalysisOfKitInDay(kit.KitID);
+    drawChartAnalysisInDay(kit.KitID);
     Session.set("kitId", kit.KitID);
 }
 
@@ -213,11 +246,11 @@ function mouseOutMarker() {
 }
 
 function getAllKit() {
-    return $.parseJSON($.ajax({
+    return $.ajax({
         type: "GET",
         url: `${url}/kit/all`,
-        async: false,
-    }).responseText);
+        // async: true,
+    });
 }
 function drawC(ctx, color, lineWidth, radius, percent, divValue) {
     percent = Math.min(Math.max(0, percent || 1), 1);
@@ -266,7 +299,6 @@ function drawCircle(id, ana = "") {
 function drawChartAnalysis(kit, type) {
     if (myChart) {
         myChart.destroy();
-        // console.log("okokok")
     }
     let labels = [];
     let arraycolor = [];
@@ -288,14 +320,6 @@ function drawChartAnalysis(kit, type) {
                 label: 'PM2.5',
                 data: kit['PM2.5'],
                 backgroundColor: arraycolor,
-                // borderColor: [
-                //     'rgba(255,99,132,1)',
-                //     'rgba(54, 162, 235, 1)',
-                //     'rgba(255, 206, 86, 1)',
-                //     'rgba(75, 192, 192, 1)',
-                //     'rgba(153, 102, 255, 1)',
-                //     'rgba(255, 159, 64, 1)'
-                // ],
                 borderWidth: 1
             }]
         },
@@ -312,6 +336,7 @@ function drawChartAnalysis(kit, type) {
                 //     }
                 // }]
             },
+            // 2 dong nay de reponsive chart vao the div block...
             responsive: true,
             maintainAspectRatio: false,
         }
@@ -322,74 +347,74 @@ function getLastDataOfKit(KitID) {
         type: "GET",
         url: `${url}/kit/${KitID}`,
         success: function(result){
-            // console.log(result);
-            // $('#temp').css('width', '150px');
-            // $("#nameKit strong").html(result);
-            let color = getColorPMByLevel(result.data["PM2.5"]);
-            $("#graph").attr("data-percent", result.data["PM2.5"]);
-            $("#temp").find("> div > span:last-child").html(result.data["temp"]);
-            $("#hud").find("> div > span:last-child").html(result.data["hud"]);
-            $("#notification").find("div div").css("background", color);
+            updateCircle(result);
             handlePointAqiIndex(result.data["PM2.5"]);
-            drawCircle('graph');
             console.log(`show data of kit : ${result.KitID}`);
             timeInterval = setTimeout(() => {
                 getLastDataOfKit(KitID);
             }, 5000);
         }
     });
-    // $.getJSON("http://localhost:1111/kit/0001")
-    // .done(function( data ) {
-    //     console.log(data);
-    // });
 }
 function getAnalysisOfKitInDay(KitID) {
-    $.ajax({
+    return $.ajax({
         type: "GET",
         url: `${url}/analysis/day/${KitID}`,
-        success: function(result){
-            // console.log(result);
-            $("#graphAnalysis").attr("data-percent", result["PM2.5"][result["PM2.5"].length - 1]);
-            $("#tempAnalysis").find("> div > span:last-child").html(result["Temperature"][result["Temperature"].length - 1]);
-            $("#hudAnalysis").find("> div > span:last-child").html(result["Humidity"][result["Humidity"].length - 1]);
-
-            drawCircle('graphAnalysis', 'Analysis');
-            drawChartAnalysis(result, result.AnalysisType);
-            // console.log(`show data of kit : ${result.KitID}`);
-            // timeInterval = setTimeout(() => {
-            //     getLastDataOfKit(KitID);
-            // }, 10000);
-        }
     });
-    // $.getJSON("http://localhost:1111/kit/0001")
-    // .done(function( data ) {
-    //     console.log(data);
-    // });
 }
+function getAnalysisOfKitOneHour(KitID, index) {
+    return new Promise((resolve, reject) => {
+        getAnalysisOfKitInDay(KitID).success((result) => {
+            resolve({
+                "data": {
+                    "PM2.5": result["PM2.5"][index],
+                    "hud": result["Humidity"][index],
+                    "temp": result["Temperature"][index],
+                }
+            });
+        });
+    });
+}
+function drawChartAnalysisInDay(KitID) {
+    getAnalysisOfKitInDay(KitID).success((result) => {
+        getAnalysisOfKitOneHour(KitID, result["PM2.5"].length - 1)
+            .then((data) => {
+                updateCircle(data, "Analysis");
+                drawChartAnalysis(result, result.AnalysisType);
+            });
+    });
+}
+
 function getAnalysisOfKitInWeek(KitID) {
-    $.ajax({
+    return $.ajax({
         type: "GET",
         url: `${url}/analysis/week/${KitID}`,
-        success: function(result){
-            // console.log(result);
-            $("#graphAnalysis").attr("data-percent", result["PM2.5"][result["PM2.5"].length - 1]);
-            $("#tempAnalysis").find("> div > span:last-child").html(result["Temperature"][result["Temperature"].length - 1]);
-            $("#hudAnalysis").find("> div > span:last-child").html(result["Humidity"][result["Humidity"].length - 1]);
-
-            drawCircle('graphAnalysis', 'Analysis');
-            drawChartAnalysis(result, result.AnalysisType);
-            // console.log(`show data of kit : ${result.KitID}`);
-            // timeInterval = setTimeout(() => {
-            //     getLastDataOfKit(KitID);
-            // }, 10000);
-        }
     });
-    // $.getJSON("http://localhost:1111/kit/0001")
-    // .done(function( data ) {
-    //     console.log(data);
-    // });
 }
 
+function getAnalysisOfKitOneDay(KitID, index) {
+    return new Promise((resolve, reject) => {
+        getAnalysisOfKitInWeek(KitID).success((result) => {
+            resolve({
+                "data": {
+                    "PM2.5": result["PM2.5"][index],
+                    "hud": result["Humidity"][index],
+                    "temp": result["Temperature"][index],
+                }
+            });
+        });
+    });
+}
+
+function drawChartAnalysisInWeek(KitID) {
+    getAnalysisOfKitInWeek(KitID).success((result) => {
+        getAnalysisOfKitOneDay(KitID, result["PM2.5"].length - 1)
+        .then((data) => {
+            updateCircle(data, "Analysis");
+            drawChartAnalysis(result, result.AnalysisType);
+        });
+    });
+}
 function  handleLabels(analysisType, dateCurrent, start) {
     const labels = [];
     const date = dateCurrent.split('/');
@@ -457,4 +482,13 @@ function getColorPMByLevel(quantity) {
     else if(lv === 3) return PMColorLv.lv3;
     else if(lv === 2) return PMColorLv.lv2;
     else return PMColorLv.lv1;
+}
+
+function updateCircle(result, ana = "") {
+    let color = getColorPMByLevel(result.data["PM2.5"]);
+    $(`#graph${ana}`).attr("data-percent", result.data["PM2.5"]);
+    $(`#temp${ana}`).find("div span:last-child").html(result.data["temp"]);
+    $(`#hud${ana}`).find("div span:last-child").html(result.data["hud"]);
+    $(`#notification${ana}`).find("div div").css("background", color);
+    drawCircle(`graph${ana}`, ana);
 }
