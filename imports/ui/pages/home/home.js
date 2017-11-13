@@ -30,6 +30,12 @@ Template.App_home.events({
     'click #close-detail-kit'(e){
         e.preventDefault();
         const tab = $("#detailKit-wrapper");
+        const iconMarker = $('.leaflet-div-icon > img');
+
+        iconMarker.each((index, key) => {
+            $(key).attr('src', '/img/marker-icon.png');
+        });
+
         if(timeInterval) {
             console.log("click makesadsadsar");
             clearTimeout(timeInterval);
@@ -70,9 +76,9 @@ Template.App_home.onRendered(() => {
                     iconUrl: '/img/marker-icon.png',
                     number: '',
                     shadowUrl: null,
-                    // iconSize: new L.Point(25, 41),
-                    // iconAnchor: new L.Point(13, 41),
-                    // popupAnchor: new L.Point(0, -33),
+                    iconSize: new L.Point(25, 41),
+                    iconAnchor: new L.Point(13, 41),
+                    popupAnchor: new L.Point(0, -33),
                     /*
                     iconAnchor: (Point)
                     popupAnchor: (Point)
@@ -98,21 +104,28 @@ Template.App_home.onRendered(() => {
                 }
             });
 
-            let markerIcon = L.icon({
-                iconUrl: '/img/marker-icon.png',
-                // title: "sdsadsadsa",
-                // number: "1",
-                iconSize:     [35, 35], // size of the icon
-                // shadowSize:   [50, 64], // size of the shadow
-                // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-                // shadowAnchor: [4, 62],  // the same for the shadow
-                // popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-            });
+            // let markerIcon = L.icon({
+            //     iconUrl: '/img/marker-icon.png',
+            //     // title: "sdsadsadsa",
+            //     // number: "1",
+            //     iconSize:     [35, 35], // size of the icon
+            //     shadowSize:   [50, 64], // size of the shadow
+            //     iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            //     shadowAnchor: [4, 62],  // the same for the shadow
+            //     // popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+            // });
             // console.log();
             marker = L.marker(kit.Location, { icon: new L.NumberedDivIcon({number: kit["PM2.5"]})}).addTo(myFeatureGroup);
-            // marker.options.icon.setText('21');
+            let valueMarker = $('.number')[index];
 
-            marker.on("click", L.bind(onClickMarker, null, kit));
+            $(valueMarker).attr("data-number", kit["PM2.5"]);
+
+            // if (kit["PM2.5"] > 200) {
+            $(valueMarker).css('color', getColorPMByLevel(kit["PM2.5"]));
+            // } else {
+            //     $(valueMarker).css('color', 'red');
+            // }
+            marker.on("click", L.bind(onClickMarker, null, kit, index));
 
             marker.bindPopup(`<b>${kit.Name}</b><br>${kit.KitID}`, { closeButton: false });
             marker.on('mouseover', mouseOverMarker);
@@ -142,8 +155,14 @@ function onMapClick() {
     const detailWrapper = $("#detailKit-wrapper");
     const elDay = $("#day");
     const elWeek = $("#week");
+    const iconMarker = $('.leaflet-div-icon > img');
+
     elDay.toggleClass("active", true);
     elWeek.toggleClass("active", false);
+
+    iconMarker.each((index, key) => {
+       $(key).attr('src', '/img/marker-icon.png');
+    });
 
     if(detailWrapper.hasClass("active")){
         if(timeInterval){
@@ -155,13 +174,20 @@ function onMapClick() {
     }
 }
 
-function onClickMarker(kit) {
+function onClickMarker(kit, index) {
     const tab = $("#detailKit-wrapper");
     const elDay = $("#day");
     const elWeek = $("#week");
+    const iconMarker = $('.leaflet-div-icon > img');
     elDay.toggleClass("active", true);
     elWeek.toggleClass("active", false);
-    console.log(this.L.Marker.icon);
+
+    iconMarker.each((i, key) => {
+        $(key).attr('src', '/img/marker-icon.png');
+    });
+
+    $(iconMarker[index]).attr('src', '/img/marker-icon-active.png');
+    // console.log(this.L.Marker.icon);
     if(timeInterval) {
         // console.log("click maker");
         clearTimeout(timeInterval);
@@ -178,10 +204,12 @@ function onClickMarker(kit) {
 
 function mouseOverMarker() {
     this.openPopup();
+    // $($('.leaflet-div-icon > img')[index]).attr('src', '/img/marker-icon-active.png');
 }
 
 function mouseOutMarker() {
     this.closePopup();
+    // $('.leaflet-div-icon > img').attr('src', '/img/marker-icon.png');
 }
 
 function getAllKit() {
@@ -200,7 +228,6 @@ function drawC(ctx, color, lineWidth, radius, percent, divValue) {
     ctx.lineWidth = lineWidth;
     ctx.stroke();
     divValue.css("color", color);
-    // console.log(color);
     // console.log(color);
 
 }
@@ -231,7 +258,7 @@ function drawCircle(id, ana = "") {
 
     let radius = (options.size - options.lineWidth) / 2;
     // console.log(options.percent);
-    let color = getColorPMByLevel(checkLevelPM(options.percent));
+    let color = getColorPMByLevel(options.percent);
 
     drawC(ctx, '#CFD0D2', options.lineWidth, radius, 100 / 100, divValue);
     drawC(ctx, color, options.lineWidth, radius, options.percent / 500, divValue);
@@ -242,6 +269,10 @@ function drawChartAnalysis(kit, type) {
         // console.log("okokok")
     }
     let labels = [];
+    let arraycolor = [];
+    kit['PM2.5'].forEach((key, index) => {
+        arraycolor.push(getColorPMByLevel(key));
+    });
     if (type === "Week"){
         labels = handleLabels(type, kit.Date);
     } else if (type === "Day") {
@@ -250,28 +281,21 @@ function drawChartAnalysis(kit, type) {
     // console.log(labels);
     let ctx = document.getElementById("chartpm25").getContext('2d');
     myChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: labels,
             datasets: [{
                 label: 'PM2.5',
                 data: kit['PM2.5'],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
+                backgroundColor: arraycolor,
+                // borderColor: [
+                //     'rgba(255,99,132,1)',
+                //     'rgba(54, 162, 235, 1)',
+                //     'rgba(255, 206, 86, 1)',
+                //     'rgba(75, 192, 192, 1)',
+                //     'rgba(153, 102, 255, 1)',
+                //     'rgba(255, 159, 64, 1)'
+                // ],
                 borderWidth: 1
             }]
         },
@@ -301,7 +325,7 @@ function getLastDataOfKit(KitID) {
             // console.log(result);
             // $('#temp').css('width', '150px');
             // $("#nameKit strong").html(result);
-            let color = getColorPMByLevel(checkLevelPM(result.data["PM2.5"]));
+            let color = getColorPMByLevel(result.data["PM2.5"]);
             $("#graph").attr("data-percent", result.data["PM2.5"]);
             $("#temp").find("> div > span:last-child").html(result.data["temp"]);
             $("#hud").find("> div > span:last-child").html(result.data["hud"]);
@@ -417,7 +441,8 @@ function checkLevelPM(quantity) {
     else if(quantity > 50) return 2;
     else return 1;
 }
-function getColorPMByLevel(lv) {
+function getColorPMByLevel(quantity) {
+    const lv = checkLevelPM(quantity);
     const PMColorLv = {
         lv1:"#009966",
         lv2:"#FFDE33",

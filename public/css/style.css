@@ -96,10 +96,12 @@ html, body {
 }
 .leaflet-marker-icon .number{
     position: relative;
-    top: -35px;
-    font-size: 14px;
+    top: -32px;
+    font-size: 12px;
     width: 35px;
     text-align: center;
+    height: 100%;
+    font-weight: 800;
 }
 /*end css map*/
 

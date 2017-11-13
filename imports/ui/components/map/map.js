@@ -26,8 +26,6 @@ Template.map.helpers({
   links() {
       // console.log("1213");
 
-
-
       // return Links.find({});
   },
 });
