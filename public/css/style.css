@@ -97,17 +97,41 @@ html, body {
     height: 46px !important;
     overflow: hidden;
 }
+
 .leaflet-div-icon img{
+    /*margin-left: -180px;*/
+}
+.marker-icon-lv1{
+    margin-left: 0;
+}
+.marker-icon-lv2{
+    margin-left: -36px;
+}
+.marker-icon-lv3{
+    margin-left: -72px;
+}
+
+.marker-icon-lv4{
     margin-left: -108px;
 }
+
+.marker-icon-lv5{
+    margin-left: -144px;
+}
+
+.marker-icon-lv6{
+    margin-left: -180px;
+}
+
 .leaflet-marker-icon .number{
     position: relative;
-    top: -32px;
+    top: -35px;
     font-size: 12px;
-    width: 35px;
+    width: 36px;
     text-align: center;
-    height: 100%;
-    font-weight: 800;
+    /*height: 100%;*/
+    font-weight: 700;
+    color: #fff;
 }
 /*end css map*/
 
@@ -168,7 +192,10 @@ html, body {
 
 /*style view detail kit*/
 #lastRecord, #analysis{
-    height: 47%;
+    height: 54%;
+}
+#analysis{
+    height: 40%;
 }
 
 /*style row last record*/
@@ -393,6 +420,7 @@ div#unitPM25 {
 #btnOption .btn-me{
     display: inline-block;
     padding: 6px 12px;
+    /*padding: 4% 10%;*/
     margin-bottom: 0;
     font-size: 14px;
     font-weight: 400;
@@ -557,7 +585,7 @@ div#unitPM25Analysis {
         /*height: auto;*/
     }
     div#valuePM25 {
-        font-size: 4.5vw;
+        font-size: 4.2vw;
     }
     div#unitPM25 {
         font-size: 1.2vw;

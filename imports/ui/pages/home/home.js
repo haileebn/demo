@@ -12,6 +12,9 @@ import '../../components/detailKit/detailKit.js';
 const url = "http://118.70.72.15:2222";
 let timeInterval = null;
 let myChart = null;
+let endPercent = 85;
+let curPerc = 0;
+
 Template.App_home.events({
     'submit .info-link-add'(event) {
         event.preventDefault();
@@ -32,11 +35,9 @@ Template.App_home.events({
         e.preventDefault();
         const tab = $("#detailKit-wrapper");
         const iconMarker = $('.leaflet-div-icon > img');
-
         iconMarker.each((index, key) => {
-            $(key).attr('src', '/img/marker-icon.png');
+            $(key).attr('src', '/img/markers.png');
         });
-
         if(timeInterval) {
             console.log("click makesadsadsar");
             clearTimeout(timeInterval);
@@ -149,15 +150,14 @@ Template.App_home.onRendered(() => {
             // });
             // console.log();
             marker = L.marker(kit.Location, { icon: new L.NumberedDivIcon({number: kit["PM2.5"]})}).addTo(myFeatureGroup);
-            let valueMarker = $('.number')[index];
+            // let valueMarker = $('.number')[index];
+            let iconMarker = $('.leaflet-div-icon > img')[index];
+            const markerClassNameLv = `marker-icon-lv${checkLevelPM(kit["PM2.5"])}`;
+            $(iconMarker).toggleClass(markerClassNameLv, true);
+            // $(valueMarker).css('margin-left', getColorPMByLevel(kit["PM2.5"]));
+            // $(valueMarker).css('color', getColorPMByLevel(kit["PM2.5"]));
+            console.log(markerClassNameLv);
 
-            $(valueMarker).attr("data-number", kit["PM2.5"]);
-
-            // if (kit["PM2.5"] > 200) {
-            $(valueMarker).css('color', getColorPMByLevel(kit["PM2.5"]));
-            // } else {
-            //     $(valueMarker).css('color', 'red');
-            // }
             marker.on("click", L.bind(onClickMarker, null, kit, index));
 
             marker.bindPopup(`<b>${kit.Name}</b><br>${kit.KitID}`, { closeButton: false });
@@ -171,7 +171,9 @@ function initMap(accessToken, latLng) {
     const mymap = L.map('mapid',{
         zoomControl: false,
     }).setView(latLng, 14);
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    // L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    // L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png?access_token={accessToken}', {
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18,
         id: 'mapbox.streets',
@@ -194,7 +196,7 @@ function onMapClick() {
     elWeek.toggleClass("active", false);
 
     iconMarker.each((index, key) => {
-       $(key).attr('src', '/img/marker-icon.png');
+       $(key).attr('src', '/img/markers.png');
     });
 
     if(detailWrapper.hasClass("active")){
@@ -216,10 +218,9 @@ function onClickMarker(kit, index) {
     elWeek.toggleClass("active", false);
 
     iconMarker.each((i, key) => {
-        $(key).attr('src', '/img/marker-icon.png');
+        $(key).attr('src', '/img/markers.png');
     });
-
-    $(iconMarker[index]).attr('src', '/img/marker-icon-active.png');
+    $(iconMarker[index]).attr('src', '/img/markers-active.png');
     // console.log(this.L.Marker.icon);
     if(timeInterval) {
         // console.log("click maker");
@@ -261,6 +262,12 @@ function drawC(ctx, color, lineWidth, radius, percent, divValue) {
     ctx.lineWidth = lineWidth;
     ctx.stroke();
     divValue.css("color", color);
+    // curPerc++;
+    // if (curPerc < endPercent) {
+    //     requestAnimationFrame(function () {
+    //         animate(curPerc / 400)
+    //     });
+    // }
     // console.log(color);
 
 }
@@ -332,11 +339,21 @@ function drawChartAnalysis(kit, type) {
                     }
                 }],
                 xAxes: [{
+                    afterTickToLabelConversion: function(data){
+                        let xLabels = data.ticks;
+                        if(xLabels.length < 10) return;
+                        xLabels.forEach(function (labels, i) {
+                            if (i !== 0 && i !== 23 && i%4 !== 0){
+                                xLabels[i] = '';
+                            }
+                        });
+                    },
                     ticks: {
                         maxRotation: 0 // angle in degrees
                     }
                 }]
             },
+
             // 2 dong nay de reponsive chart vao the div block...
             responsive: true,
             maintainAspectRatio: false,
@@ -438,8 +455,9 @@ function  handleLabels(analysisType, dateCurrent, start) {
         dayCurrent.setHours(start);
         for(let i = 0; i < 24; i++){
             dayCurrent.setHours(dayCurrent.getHours() - 1);
-            if(i === 0 || i%4 === 0 || i === 23) labels.unshift(dayCurrent.getHours());
-            else labels.unshift("");
+            labels.unshift(dayCurrent.getHours());
+            // if(i === 0 || i%4 === 0 || i === 23) labels.unshift(dayCurrent.getHours());
+            // else labels.unshift("");
         }
         // console.log(dayCurrent);
     }
