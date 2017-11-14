@@ -106,7 +106,7 @@ Template.App_home.onRendered(() => {
             // console.log(L.AwesomeMarkers.icon);
             L.NumberedDivIcon = L.Icon.extend({
                 options: {
-                    iconUrl: '/img/markers-matte.png',
+                    iconUrl: '/img/markers.png',
                     number: '',
                     shadowUrl: null,
                     iconSize: new L.Point(25, 41),
