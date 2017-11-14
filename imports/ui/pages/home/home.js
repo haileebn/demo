@@ -106,7 +106,7 @@ Template.App_home.onRendered(() => {
             // console.log(L.AwesomeMarkers.icon);
             L.NumberedDivIcon = L.Icon.extend({
                 options: {
-                    iconUrl: '/img/marker-icon.png',
+                    iconUrl: '/img/markers-matte.png',
                     number: '',
                     shadowUrl: null,
                     iconSize: new L.Point(25, 41),
@@ -314,6 +314,7 @@ function drawChartAnalysis(kit, type) {
     let ctx = document.getElementById("chartpm25").getContext('2d');
     myChart = new Chart(ctx, {
         type: 'bar',
+        // dataPointWidth: 2,
         data: {
             labels: labels,
             datasets: [{
@@ -330,11 +331,11 @@ function drawChartAnalysis(kit, type) {
                         beginAtZero:true
                     }
                 }],
-                // xAxes: [{
-                //     label: {
-                //         display: false
-                //     }
-                // }]
+                xAxes: [{
+                    ticks: {
+                        maxRotation: 0 // angle in degrees
+                    }
+                }]
             },
             // 2 dong nay de reponsive chart vao the div block...
             responsive: true,
@@ -437,7 +438,8 @@ function  handleLabels(analysisType, dateCurrent, start) {
         dayCurrent.setHours(start);
         for(let i = 0; i < 24; i++){
             dayCurrent.setHours(dayCurrent.getHours() - 1);
-            labels.unshift(dayCurrent.getHours());
+            if(i === 0 || i%4 === 0 || i === 23) labels.unshift(dayCurrent.getHours());
+            else labels.unshift("");
         }
         // console.log(dayCurrent);
     }

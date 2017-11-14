@@ -93,6 +93,12 @@ html, body {
 .leaflet-div-icon {
     background: transparent !important;
     border: none !important;
+    width: 36px !important;
+    height: 46px !important;
+    overflow: hidden;
+}
+.leaflet-div-icon img{
+    margin-left: -108px;
 }
 .leaflet-marker-icon .number{
     position: relative;
