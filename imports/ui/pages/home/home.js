@@ -9,7 +9,7 @@ import '../../components/map/map.js';
 import '../../components/navbar/navbar.js';
 import '../../components/detailKit/detailKit.js';
 
-const url = "http://118.70.72.15:2222";
+const url = "http://118.70.72.15:2223";
 let timeInterval = null;
 let myChart = null;
 let endPercent = 85;
